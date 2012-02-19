@@ -10,7 +10,7 @@
 namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-Queue::Queue()
+Queue::Queue(amqp_connection_state_t conn, int channel_number, const string& name)
 {
 }
 
