@@ -21,5 +21,6 @@ Next, you need to update Git submodules:
 Lastly, proceed to build the sources:
 
   `mkdir build, cd build`
+  
   `cmake ..; make`
 
