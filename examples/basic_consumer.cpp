@@ -1,7 +1,17 @@
-#include <iostream>
+#include "AMQP.hpp"
+#include "Observer.hpp"
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
+class MyObserver : public ideup::amqp::Observer
+{
+  public:
+  protected:
+  private:
+};
+
+int main(int argc, char* argv[])
+{
+  ideup::amqp::AMQP* amqp = new ideup::amqp::AMQP();
   return 0;
 }

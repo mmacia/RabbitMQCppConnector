@@ -35,6 +35,7 @@
 #define __IDEUP_AMQP_QUEUE_HPP__
 
 #include "common.hpp"
+#include "Subject.hpp"
 #include "Base.hpp"
 #include <librabbitmq/amqp.h>
 
@@ -44,7 +45,15 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
-class Queue : public Base
+enum AMQPEvents {
+  AMQP_MESSAGE,
+  AMQP_SIGUSR,
+  AMQP_CANCEL,
+  AMQP_CLOSE_CHANNEL
+};
+
+
+class Queue : public Base, public Subject
 {
   public:
     Queue(amqp_connection_state_t conn, int channel_number, const string& name);

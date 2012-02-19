@@ -35,6 +35,8 @@
 #define __IDEUP_AMQP_SUBJECT_HPP__
 
 #include "common.hpp"
+#include "Observer.hpp"
+#include "Message.hpp"
 
 
 namespace ideup { namespace amqp {
@@ -45,12 +47,18 @@ using namespace std;
 class Subject
 {
   public:
-    Subject();
     ~Subject();
+
+    void attach(Observer* obs);
+    void message(Message& message);
+    Message& message() const;
+    void notify();
 
 
   protected:
   private:
+    vector<Observer *> observers_;
+    Message            message_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
