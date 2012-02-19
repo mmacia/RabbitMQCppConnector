@@ -35,6 +35,8 @@
 #define __IDEUP_AMQP_EXCEPTION_HPP__
 
 #include "common.hpp"
+#include <librabbitmq/amqp.h>
+#include <librabbitmq/amqp_framing.h>
 
 
 namespace ideup { namespace amqp {
@@ -42,15 +44,55 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
+/**
+ * Wraps AMQP errors into exceptions.
+ *
+ * @author Moisés Maciá <mmacia@gmail.com>
+ */
 class Exception
 {
   public:
-    Exception();
+    /**
+     * Constructor
+     *
+     * @param message Exception descriptive message.
+     * @param file    File in wich exection was raised (for debugging pourposes only).
+     * @param line    Line number on wich exception was raised (for debugging pourposes only).
+     */
+    Exception(const string& message, const string& file = "<unknwon>", int line = 0);
+    /**
+     * Constructor
+     *
+     * @param message  Exception descriptive message.
+     * @param response AQMP returned structure to retrieve server error from.
+     * @param file     File in wich exection was raised (for debugging pourposes only).
+     * @param line     Line number on wich exception was raised (for debugging pourposes only).
+     */
+    Exception(const string& message, amqp_rpc_reply_t& response, const string& file = "<unknwon>", int line = 0);
+    /**
+     * Default destructor
+     */
     ~Exception();
+
+    /**
+     * Gets the exception message.
+     */
+    string message() const;
+    /**
+     * Gets the file in wich exception was raised.
+     */
+    string file() const;
+    /**
+     * Gets the line number on wich exception was raised.
+     */
+    int line();
 
 
   protected:
   private:
+    string message_;
+    string file_;
+    int line_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
