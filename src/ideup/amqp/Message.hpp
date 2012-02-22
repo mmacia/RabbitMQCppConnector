@@ -35,6 +35,7 @@
 #define __IDEUP_AMQP_MESSAGE_HPP__
 
 #include "common.hpp"
+#include "Queue.hpp"
 
 
 namespace ideup { namespace amqp {
@@ -45,12 +46,16 @@ using namespace std;
 class Message
 {
   public:
-    Message();
-    ~Message();
+    Message(Queue *queue) : queue_(queue) {};
+    ~Message() {};
 
+    void message(const string& message) { message_ = message; };
+    string message() const { return message_; };
 
   protected:
   private:
+    Queue *queue_;
+    string message_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

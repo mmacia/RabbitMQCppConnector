@@ -47,12 +47,13 @@ using namespace std;
 class Subject
 {
   public:
+    Subject() {};
     ~Subject();
 
     void attach(Observer* obs);
     void message(Message& message);
     Message& message() const;
-    void notify();
+    void notify() const;
 
 
   protected:
