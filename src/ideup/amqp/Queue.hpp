@@ -35,17 +35,21 @@
 #define __IDEUP_AMQP_QUEUE_HPP__
 
 #include "common.hpp"
-#include "Subject.hpp"
+#include "Observer.hpp"
+#include "Message.hpp"
 #include "Base.hpp"
 #include <librabbitmq/amqp.h>
+#include <bitset>
 
 
 namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
 
+class Message;
+
 using namespace std;
 
-enum AMQPEvents {
+enum Events {
   AMQP_MESSAGE,
   AMQP_SIGUSR,
   AMQP_CANCEL,
@@ -53,15 +57,39 @@ enum AMQPEvents {
 };
 
 
-class Queue : public Base, public Subject
+class Queue : public Base
 {
   public:
     Queue(amqp_connection_state_t conn, int channel_number, const string& name);
     ~Queue();
 
+    void declare();
+    void bind(const string& exchange_name, const string& key);
+    void unbind(const string& exchange_name, const string& key);
+    void consume();
+    void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
+    string getConsumerTag() { return consumer_tag_; };
+    void attach(Observer* obs);
+    void message(Message& message);
+    Message& message() const;
+    void notify() const;
 
   protected:
   private:
+    string                   consumer_tag_;
+    string                   name_;
+    int                      channel_number_;
+    amqp_connection_state_t  conn_;
+    bitset<5>                queue_settings_;
+    bitset<5>                consumer_settings_;
+    vector<Observer *>       observers_;
+    Message*                 message_;
+
+    void sendDeclareCommand();
+    void sendBindCommand(const string& exchange_name, const string& key);
+    void sendConsumeCommand();
+    void openChannel();
+    void closeChannel();
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
