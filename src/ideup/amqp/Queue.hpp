@@ -37,8 +37,10 @@
 #include "common.hpp"
 #include "Observer.hpp"
 #include "Message.hpp"
+#include "Exception.hpp"
 #include "Base.hpp"
 #include <librabbitmq/amqp.h>
+#include <librabbitmq/amqp_framing.h>
 #include <bitset>
 
 
