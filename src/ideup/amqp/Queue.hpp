@@ -58,6 +58,14 @@ enum Events {
   AMQP_CLOSE_CHANNEL
 };
 
+enum QueueArg {
+  QUEUE_PASSIVE,
+  QUEUE_DURABLE,
+  QUEUE_EXCLUSIVE,
+  QUEUE_AUTO_DELETE,
+  numQueueArgs
+};
+
 
 class Queue : public Base
 {
@@ -65,6 +73,7 @@ class Queue : public Base
     Queue(amqp_connection_state_t conn, int channel_number, const string& name);
     ~Queue();
 
+    void declare(bitset<numQueueArgs>& queue_args);
     void declare();
     void bind(const string& exchange_name, const string& key);
     void unbind(const string& exchange_name, const string& key);
@@ -82,12 +91,11 @@ class Queue : public Base
     string                   name_;
     int                      channel_number_;
     amqp_connection_state_t  conn_;
-    bitset<5>                queue_settings_;
     bitset<5>                consumer_settings_;
     vector<Observer *>       observers_;
     Message*                 message_;
 
-    void sendDeclareCommand();
+    void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);
     void sendConsumeCommand();
     void openChannel();
