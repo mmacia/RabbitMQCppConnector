@@ -71,6 +71,18 @@ void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
       amqp_empty_table);
 
   amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error declaring queue.", ret, __FILE__, __LINE__);
+  }
+
+  amqp_bytes_t queue_name = amqp_bytes_malloc_dup(r->queue);
+
+  if (queue_name.bytes == NULL) {
+    throw Exception("Out of memory while copying queue name.", __FILE__, __LINE__);
+  }
+
+  amqp_bytes_free(queue_name);
 }
 
 
