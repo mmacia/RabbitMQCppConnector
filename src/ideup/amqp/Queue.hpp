@@ -66,6 +66,13 @@ enum QueueArg {
   numQueueArgs
 };
 
+enum ConsumerArg {
+  CONSUMER_NO_LOCAL,
+  CONSUMER_NO_ACK,
+  CONSUMER_EXCLUSIVE,
+  numConsumerArgs
+};
+
 
 class Queue : public Base
 {
@@ -77,6 +84,7 @@ class Queue : public Base
     void declare();
     void bind(const string& exchange_name, const string& key);
     void unbind(const string& exchange_name, const string& key);
+    void consume(bitset<numConsumerArgs>& consumer_args);
     void consume();
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
@@ -91,13 +99,12 @@ class Queue : public Base
     string                   name_;
     int                      channel_number_;
     amqp_connection_state_t  conn_;
-    bitset<5>                consumer_settings_;
     vector<Observer *>       observers_;
     Message*                 message_;
 
     void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);
-    void sendConsumeCommand();
+    void sendConsumeCommand(bitset<numConsumerArgs>& arguments);
     void openChannel();
     void closeChannel();
 };

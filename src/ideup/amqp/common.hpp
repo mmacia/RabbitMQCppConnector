@@ -11,3 +11,4 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <cstring>

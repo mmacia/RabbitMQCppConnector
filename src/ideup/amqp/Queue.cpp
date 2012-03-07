@@ -112,5 +112,104 @@ void Queue::sendBindCommand(const string& exchange_name, const string& key)
 }
 
 
+void Queue::consume()
+{
+  bitset<numConsumerArgs> args;
+  consume(args);
+}
+
+
+void Queue::consume(bitset<numConsumerArgs>& consumer_args)
+{
+  sendConsumeCommand(consumer_args);
+}
+
+
+void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
+{
+  amqp_basic_consume(
+      conn_,
+      channel_number_,
+      amqp_cstring_bytes(name_.c_str()),
+      amqp_cstring_bytes(consumer_tag_.c_str()),
+      arguments.test(CONSUMER_NO_LOCAL) ? 1 : 0,
+      arguments.test(CONSUMER_NO_ACK) ? 1 : 0,
+      arguments.test(CONSUMER_EXCLUSIVE) ? 1 : 0,
+      amqp_empty_table);
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Unable to send consume command", ret, __FILE__, __LINE__);
+  }
+
+  amqp_frame_t frame;
+  int result;
+
+  while (true) {
+    amqp_maybe_release_buffers(conn_);
+
+    result = amqp_simple_wait_frame(conn_, &frame);
+    if (result < 0) {
+      return;
+    }
+
+    if (frame.frame_type != AMQP_FRAME_METHOD) {
+      continue;
+    }
+
+    // TODO implement cancel message
+
+    if (frame.payload.method.id != AMQP_BASIC_DELIVER_METHOD) {
+      continue;
+    }
+
+    // TODO fetch message metadata
+
+    result = amqp_simple_wait_frame(conn_, &frame);
+    if (result < 0) {
+      throw Exception("Message frame is invalid!", __FILE__, __LINE__);
+    }
+
+    if (frame.frame_type != AMQP_FRAME_HEADER) {
+      throw Exception("Expected header!", __FILE__, __LINE__);
+    }
+
+    // TODO fetch headers
+
+    size_t body_size = frame.payload.properties.body_size;
+    size_t body_received = 0;
+
+    amqp_bytes_t body = amqp_bytes_malloc(body_size);
+
+    while (body_received < body_size) {
+      result = amqp_simple_wait_frame(conn_, &frame);
+      if (result < 0) {
+        return;
+      }
+
+      if (frame.frame_type != AMQP_FRAME_BODY) {
+        throw Exception("Expected body!", __FILE__, __LINE__);
+      }
+
+      memcpy(
+          (void*)((size_t)body.bytes + body_received),
+          frame.payload.body_fragment.bytes,
+          frame.payload.body_fragment.len);
+
+      body_received += frame.payload.body_fragment.len;
+    }
+
+    string body_str(static_cast<char*>(body.bytes), body.len);
+    amqp_bytes_free(body);
+
+
+    // TODO notify observers here
+    Message msg(this);
+    msg.message(body_str);
+  }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}
