@@ -36,7 +36,6 @@
 
 #include "common.hpp"
 #include "Observer.hpp"
-#include "Message.hpp"
 #include "Exception.hpp"
 #include "Base.hpp"
 #include <librabbitmq/amqp.h>
@@ -48,6 +47,7 @@ namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
 
 class Message;
+class Observer;
 
 using namespace std;
 
@@ -89,18 +89,16 @@ class Queue : public Base
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
     void attach(Observer* obs);
-    void message(Message& message);
-    Message& message() const;
-    void notify() const;
+    void notify(const string& message) const;
+    string name() const { return name_; };
 
   protected:
   private:
-    string                   consumer_tag_;
-    string                   name_;
-    int                      channel_number_;
-    amqp_connection_state_t  conn_;
-    vector<Observer *>       observers_;
-    Message*                 message_;
+    string                  consumer_tag_;
+    string                  name_;
+    int                     channel_number_;
+    amqp_connection_state_t conn_;
+    vector<Observer*>       observers_;
 
     void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);

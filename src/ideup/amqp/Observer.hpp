@@ -35,10 +35,13 @@
 #define __IDEUP_AMQP_OBSERVER_HPP__
 
 #include "common.hpp"
+#include "Queue.hpp"
 
 
 namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
+
+class Queue;
 
 using namespace std;
 
@@ -48,9 +51,14 @@ class Observer
     Observer();
     ~Observer();
 
+    virtual void update(const string& message) = 0;
+    void subject(Queue* subject);
 
   protected:
+    Queue* subject() const { return subject_; };
+
   private:
+    Queue* subject_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

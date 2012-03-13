@@ -77,15 +77,15 @@ class Exception
     /**
      * Gets the exception message.
      */
-    string message() const;
+    string message() const { return message_; };
     /**
      * Gets the file in wich exception was raised.
      */
-    string file() const;
+    string file() const { return file_; };
     /**
      * Gets the line number on wich exception was raised.
      */
-    int line();
+    int line() { return line_; };
 
 
   protected:

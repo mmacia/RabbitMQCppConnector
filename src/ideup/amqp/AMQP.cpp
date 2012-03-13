@@ -38,13 +38,11 @@ AMQP::~AMQP()
 {
   // free queues
   if (channels_.size() > 0) {
-    vector<Queue*>::iterator it;
-
-    for (it = channels_.begin(); it != channels_.end(); it++) {
-      delete *it;
+    for (auto it = channels_.begin(); it != channels_.end(); it++) {
+      delete (Queue*)*it;
     }
 
-    channels_.erase(channels_.begin(), channels_.end());
+    channels_.clear();
   }
 
   amqp_destroy_connection(conn_);
@@ -89,8 +87,12 @@ void AMQP::connect()
 
 Queue* AMQP::createQueue(const string& name)
 {
+  if (!isConnected()) {
+    throw Exception("Not connected to RabbitMQ server!", __FILE__, __LINE__);
+  }
+
   int channel_number = channels_.size() + 1;
-  Queue *q = new Queue(conn_, channel_number, name);
+  Queue* q = new Queue(conn_, channel_number, name);
 
   channels_.push_back(q);
   return q;

@@ -22,6 +22,15 @@ Queue::Queue(amqp_connection_state_t conn, int channel_number, const string& nam
 Queue::~Queue()
 {
   closeChannel();
+
+  // clean up attached observers
+  if (!observers_.empty()) {
+    for (auto i = observers_.begin(); i != observers_.end(); ++i) {
+      delete (Observer*)*i;
+    }
+
+    observers_.clear();
+  }
 }
 
 
@@ -203,11 +212,24 @@ void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
     string body_str(static_cast<char*>(body.bytes), body.len);
     amqp_bytes_free(body);
 
-
-    // TODO notify observers here
-    Message msg(this);
-    msg.message(body_str);
+    notify(body_str); // notify observers
   }
+}
+
+
+void Queue::notify(const string& message) const
+{
+  for (auto i = observers_.begin(); i != observers_.end(); ++i) {
+    auto observer = (Observer*)*i;
+    observer->update(message);
+  }
+}
+
+
+void Queue::attach(Observer* obs)
+{
+  obs->subject(this);
+  observers_.push_back(obs);
 }
 
 

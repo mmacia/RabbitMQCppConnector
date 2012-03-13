@@ -19,5 +19,18 @@ Observer::~Observer()
 {
 }
 
+
+void Observer::update(const string& message)
+{
+}
+
+
+void Observer::subject(Queue* subject)
+{
+  if (!subject_) {
+    subject_ = subject;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}
