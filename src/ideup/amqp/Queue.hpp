@@ -102,6 +102,7 @@ class Queue : public Base
 
     void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);
+    void sendUnbindCommand(const string& exchange_name, const string& key);
     void sendConsumeCommand(bitset<numConsumerArgs>& arguments);
     void openChannel();
     void closeChannel();
