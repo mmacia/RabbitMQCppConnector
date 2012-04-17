@@ -5,12 +5,36 @@
  * @author Moisés Maciá <mmacia@gmail.com>     *
  ***********************************************/
 
-#include "AMQP.hpp"
+#include "Channel.hpp"
 
 namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-AMQP::AMQP()
+
+Channel::Channel()
+{
+}
+
+
+Channel::~Channel()
+{
+}
+
+
+Queue::ptr_t Channel::declareQueue(const string& name)
+{
+  return nullptr;
+}
+
+
+void Channel::close()
+{
+  // TODO implement me!
+}
+
+
+
+/*AMQP::AMQP()
 {
   is_connected_ = false;
   host("localhost");
@@ -18,10 +42,10 @@ AMQP::AMQP()
   user("guest");
   password("guest");
   vhost("/");
-}
+}*/
 
 
-AMQP::AMQP(const string& h, int p, const string& u, const string& pass, const string& vh)
+/*AMQP::AMQP(const string& h, int p, const string& u, const string& pass, const string& vh)
 {
   is_connected_ = false;
   host(h);
@@ -31,10 +55,10 @@ AMQP::AMQP(const string& h, int p, const string& u, const string& pass, const st
   vhost(vh);
 
   connect();
-}
+}*/
 
 
-AMQP::~AMQP()
+/*AMQP::~AMQP()
 {
   // free queues
   if (channels_.size() > 0) {
@@ -47,10 +71,10 @@ AMQP::~AMQP()
 
   amqp_destroy_connection(conn_);
   close(sock_);
-}
+}*/
 
 
-void AMQP::connect()
+/*void AMQP::connect()
 {
   if (is_connected_) {
     return;
@@ -82,10 +106,10 @@ void AMQP::connect()
   }
 
   throw Exception("Error while login.", response, __FILE__, __LINE__);
-}
+}*/
 
 
-Queue* AMQP::createQueue(const string& name)
+/*Queue* AMQP::createQueue(const string& name)
 {
   if (!isConnected()) {
     throw Exception("Not connected to RabbitMQ server!", __FILE__, __LINE__);
@@ -96,6 +120,6 @@ Queue* AMQP::createQueue(const string& name)
 
   channels_.push_back(q);
   return q;
-}
+}*/
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}

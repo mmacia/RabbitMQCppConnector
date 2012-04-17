@@ -31,8 +31,8 @@
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *************************************************************/
 
-#ifndef __IDEUP_AMQP_AMQP_HPP__
-#define __IDEUP_AMQP_AMQP_HPP__
+#ifndef __IDEUP_AMQP_CHANNEL_HPP__
+#define __IDEUP_AMQP_CHANNEL_HPP__
 
 #include "common.hpp"
 #include "Queue.hpp"
@@ -69,4 +69,4 @@ class Channel
 /////////////////////////////////////////////////////////////////////////////////////
 }}
 
-#endif //__IDEUP_AMQP_AMQP_HPP__
+#endif //__IDEUP_AMQP_CHANNEL_HPP__

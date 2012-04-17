@@ -35,6 +35,7 @@
 #define __IDEUP_AMQP_OBSERVER_HPP__
 
 #include "common.hpp"
+#include "Message.hpp"
 #include "Queue.hpp"
 
 

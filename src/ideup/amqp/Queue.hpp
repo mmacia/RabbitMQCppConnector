@@ -35,6 +35,7 @@
 #define __IDEUP_AMQP_QUEUE_HPP__
 
 #include "common.hpp"
+#include "Message.hpp"
 #include "Observer.hpp"
 #include "Exception.hpp"
 #include "Base.hpp"
@@ -46,7 +47,6 @@
 namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
 
-class Message;
 class Observer;
 
 using namespace std;
@@ -86,13 +86,12 @@ class Queue : public Base
     void declare();
     void bind(const string& exchange_name, const string& key);
     void unbind(const string& exchange_name, const string& key);
-    void consume(bitset<numConsumerArgs>& consumer_args);
-    void consume();
+    void basicConsume(bitset<numConsumerArgs>& consumer_args);
     void basicConsume();
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
     void attach(Observer* obs);
-    void notify(const string& message) const;
+    void notify(Message& message) const;
     string name() const { return name_; };
 
   protected:

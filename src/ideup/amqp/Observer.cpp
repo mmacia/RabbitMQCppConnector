@@ -20,7 +20,7 @@ Observer::~Observer()
 }
 
 
-void Observer::update(const string& message)
+void Observer::update(Message& message)
 {
 }
 

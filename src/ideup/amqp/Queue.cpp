@@ -147,14 +147,14 @@ void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
 }
 
 
-void Queue::consume()
+void Queue::basicConsume()
 {
   bitset<numConsumerArgs> args;
-  consume(args);
+  basicConsume(args);
 }
 
 
-void Queue::consume(bitset<numConsumerArgs>& consumer_args)
+void Queue::basicConsume(bitset<numConsumerArgs>& consumer_args)
 {
   sendConsumeCommand(consumer_args);
 }
@@ -235,7 +235,7 @@ void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
       body_received += frame.payload.body_fragment.len;
     }
 
-    string body_str(static_cast<char*>(body.bytes), body.len);
+    Message body_str(static_cast<char*>(body.bytes), body.len);
     amqp_bytes_free(body);
 
     notify(body_str); // notify observers
@@ -243,7 +243,7 @@ void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
 }
 
 
-void Queue::notify(const string& message) const
+void Queue::notify(Message& message) const
 {
   for (auto i = observers_.begin(); i != observers_.end(); ++i) {
     auto observer = (Observer*)*i;

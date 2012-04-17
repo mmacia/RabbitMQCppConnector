@@ -3,6 +3,7 @@
 #include "../src/ideup/amqp/Connection.hpp"
 #include "../src/ideup/amqp/Channel.hpp"
 #include "../src/ideup/amqp/Queue.hpp"
+#include "../src/ideup/amqp/Message.hpp"
 
 using namespace ideup::amqp;
 

@@ -14,7 +14,7 @@ Connection::~Connection()
 
 bool Connection::isConnected()
 {
-  return /* something */;
+  return is_connected_;
 }
 
 
@@ -26,37 +26,37 @@ Channel::ptr_t Connection::createChannel()
 
 int Connection::getPort()
 {
-  return /* something */;
+  return port_;
 }
 
 
 string Connection::getHost()
 {
-  return /* something */;
+  return host_;
 }
 
 
 void Connection::close()
 {
-  return /* something */;
+  // TODO implement me!
 }
 
 
 void Connection::connect()
 {
-  return /* something */;
+  // TODO implement me!
 }
 
 
 void Connection::setHost(string host)
 {
-  return /* something */;
+  host_ = host;
 }
 
 
 void Connection::setPort(int port)
 {
-  return /* something */;
+  port_ = port;
 }
 
 
