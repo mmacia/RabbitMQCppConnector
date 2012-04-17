@@ -1,47 +1,31 @@
-#include "AMQP.hpp"
-#include "Observer.hpp"
+#include <iostream>
+#include "../src/ideup/amqp/ConnectionFactory.hpp"
+#include "../src/ideup/amqp/Connection.hpp"
+#include "../src/ideup/amqp/Channel.hpp"
+#include "../src/ideup/amqp/Queue.hpp"
 
-using namespace std;
+using namespace ideup::amqp;
 
-class MyObserver : public ideup::amqp::Observer
+
+class MyConsumer : public Observer
 {
   public:
-    MyObserver() {};
-    ~MyObserver() {};
-
-    void update(const string& message) {
-      ideup::amqp::Queue* q = dynamic_cast<ideup::amqp::Queue*>(subject());
-      cout << "Observer notified! " << q->name() << " -- ";
-      cout << message << endl;
+    void update(Message& message) {
+      cout << message.getBody() << endl;
     }
-
-  protected:
-  private:
 };
+
 
 int main(int argc, char* argv[])
 {
-  using namespace ideup::amqp;
+  Connection::ptr_t conn = ConnectionFactory::newConnection();
+  Channel::ptr_t channel = conn->createChannel();
 
-  AMQP amqp;
+  Queue::ptr_t queue = channel->declareQueue("my-first-queue");
 
-  try {
-    amqp.connect();
-    Queue* queue = amqp.createQueue("my_sample_queue");
+  queue->attach(new MyConsumer());
+  queue->basicConsume();
 
-    bitset<numQueueArgs> args;
-    args.set(QUEUE_DURABLE);
-
-    queue->declare(args);
-
-    shared_ptr<MyObserver> my_observer(new MyObserver());
-
-    queue->attach(my_observer.get());
-    queue->consume();
-  }
-  catch(Exception& e) {
-    cerr << e.message() << " in " << e.file() << ":" << e.line() << endl;
-  }
-
-  return 0;
+  channel->close();
+  conn->close();
 }

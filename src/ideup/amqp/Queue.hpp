@@ -77,6 +77,8 @@ enum ConsumerArg {
 class Queue : public Base
 {
   public:
+    typedef shared_ptr<Queue> ptr_t;
+
     Queue(amqp_connection_state_t conn, int channel_number, const string& name);
     ~Queue();
 
@@ -86,6 +88,7 @@ class Queue : public Base
     void unbind(const string& exchange_name, const string& key);
     void consume(bitset<numConsumerArgs>& consumer_args);
     void consume();
+    void basicConsume();
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
     void attach(Observer* obs);

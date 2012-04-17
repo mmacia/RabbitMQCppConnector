@@ -31,38 +31,42 @@
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *************************************************************/
 
-#ifndef __IDEUP_AMQP_OBSERVER_HPP__
-#define __IDEUP_AMQP_OBSERVER_HPP__
+#ifndef __IDEUP_AMQP_AMQP_HPP__
+#define __IDEUP_AMQP_AMQP_HPP__
 
 #include "common.hpp"
 #include "Queue.hpp"
+#include "Exception.hpp"
+#include <librabbitmq/amqp.h>
+#include <librabbitmq/amqp_framing.h>
 
 
 namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
 
-class Queue;
-
 using namespace std;
 
-class Observer
+/**
+ *
+ * @author Moisés Maciá <mmacia@gmail.com>
+ */
+class Channel
 {
   public:
-    Observer();
-    ~Observer();
+    typedef shared_ptr<Channel> ptr_t;
 
-    //virtual void update(const string& message) = 0;
-    virtual void update(Message& message) = 0;
-    void subject(Queue* subject);
+    Channel();
+    virtual ~Channel();
+
+
+    Queue::ptr_t declareQueue(const string& name);
+    void close();
 
   protected:
-    Queue* subject() const { return subject_; };
-
   private:
-    Queue* subject_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
 }}
 
-#endif //__IDEUP_AMQP_OBSERVER_HPP__
+#endif //__IDEUP_AMQP_AMQP_HPP__
