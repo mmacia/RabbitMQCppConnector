@@ -60,7 +60,7 @@ class Connection
       * @param  pass
       * @param  vhost
       */
-     Connection(string host, int port, string user, string pass, string vhost);
+    Connection(string host, int port, string user, string pass, string vhost);
 
     /**
      * Empty Destructor
@@ -94,6 +94,10 @@ class Connection
 
     /**
      */
+    void connect();
+
+    /**
+     */
     void close();
 
 
@@ -103,15 +107,11 @@ class Connection
     string                  password_;
     string                  vhost_;
     int                     port_;
-    bool                    is_connected_;
     int                     sock_;
+    unsigned int            channel_next_;
     amqp_connection_state_t conn_;
     vector<Queue::ptr_t>    channels_;
 
-
-    /**
-     */
-    void connect();
 
     /**
      * @return bool
