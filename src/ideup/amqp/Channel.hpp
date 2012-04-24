@@ -46,6 +46,14 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
+enum QueueArg {
+  QUEUE_PASSIVE,
+  QUEUE_DURABLE,
+  QUEUE_EXCLUSIVE,
+  QUEUE_AUTO_DELETE,
+  numQueueArgs
+};
+
 /**
  *
  * @author Moisés Maciá <mmacia@gmail.com>
@@ -54,16 +62,29 @@ class Channel
 {
   public:
     typedef shared_ptr<Channel> ptr_t;
+    typedef bitset<numQueueArgs> QueueArguments;
 
-    Channel();
+    Channel(const amqp_connection_state_t& conn, const int number);
     virtual ~Channel();
 
 
+    //void declareExchange();
     Queue::ptr_t declareQueue(const string& name);
-    void close();
+    Queue::ptr_t declareQueue(const string& name, QueueArguments args);
+    /*void deleteQueue();
+    void bindQueue();
+    void unbindQueue();
+    void purgeQueue();
+    void basicAck();
+    void basicPublics();
+    void basicConsume();
+    void basicCancel();*/
 
   protected:
   private:
+    const amqp_connection_state_t conn_;
+    const int number_;
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

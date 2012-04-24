@@ -29,7 +29,7 @@ Channel::ptr_t Connection::createChannel()
     connect();
   }
 
-  return make_shared<Channel>();
+  return make_shared<Channel>(conn_, channel_next_);
 }
 
 
