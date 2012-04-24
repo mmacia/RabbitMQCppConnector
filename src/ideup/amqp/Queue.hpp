@@ -58,13 +58,13 @@ enum Events {
   AMQP_CLOSE_CHANNEL
 };
 
-enum QueueArg {
+/*enum QueueArg {
   QUEUE_PASSIVE,
   QUEUE_DURABLE,
   QUEUE_EXCLUSIVE,
   QUEUE_AUTO_DELETE,
   numQueueArgs
-};
+};*/
 
 enum ConsumerArg {
   CONSUMER_NO_LOCAL,
@@ -82,11 +82,11 @@ class Queue : public Base
     Queue(amqp_connection_state_t conn, int channel_number, const string& name);
     ~Queue();
 
-    void declare(bitset<numQueueArgs>& queue_args);
+    //void declare(bitset<numQueueArgs>& queue_args);
     void declare();
     void bind(const string& exchange_name, const string& key);
     void unbind(const string& exchange_name, const string& key);
-    void basicConsume(bitset<numConsumerArgs>& consumer_args);
+    //void basicConsume(bitset<numConsumerArgs>& consumer_args);
     void basicConsume();
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
@@ -102,10 +102,10 @@ class Queue : public Base
     amqp_connection_state_t conn_;
     vector<Observer*>       observers_;
 
-    void sendDeclareCommand(bitset<numQueueArgs>& arguments);
+    //void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);
     void sendUnbindCommand(const string& exchange_name, const string& key);
-    void sendConsumeCommand(bitset<numConsumerArgs>& arguments);
+    //void sendConsumeCommand(bitset<numConsumerArgs>& arguments);
     void openChannel();
     void closeChannel();
 };

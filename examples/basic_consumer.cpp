@@ -27,6 +27,5 @@ int main(int argc, char* argv[])
   queue->attach(new MyConsumer());
   queue->basicConsume();
 
-  channel->close();
   conn->close();
 }

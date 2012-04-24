@@ -15,13 +15,13 @@ Queue::Queue(amqp_connection_state_t conn, int channel_number, const string& nam
   channel_number_(channel_number),
   conn_(conn)
 {
-  openChannel();
+  //openChannel();
 }
 
 
 Queue::~Queue()
 {
-  closeChannel();
+  //closeChannel();
 
   // clean up attached observers
   if (!observers_.empty()) {
@@ -36,34 +36,34 @@ Queue::~Queue()
 
 void Queue::closeChannel()
 {
-  amqp_rpc_reply_t ret = amqp_channel_close(conn_, channel_number_, AMQP_REPLY_SUCCESS);
+  /*amqp_rpc_reply_t ret = amqp_channel_close(conn_, channel_number_, AMQP_REPLY_SUCCESS);
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error closing channel.", ret, __FILE__, __LINE__);
-  }
+  }*/
 }
 
 
-void Queue::openChannel()
+/*void Queue::openChannel()
 {
   amqp_channel_open(conn_, channel_number_);
-}
+}*/
 
 
 void Queue::declare()
 {
-  auto arguments = bitset<numQueueArgs>();
-  sendDeclareCommand(arguments);
+  /*auto arguments = bitset<numQueueArgs>();
+  sendDeclareCommand(arguments);*/
 }
 
 
-void Queue::declare(bitset<numQueueArgs>& queue_args)
+/*void Queue::declare(bitset<numQueueArgs>& queue_args)
 {
   sendDeclareCommand(queue_args);
-}
+}*/
 
 
-void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
+/*void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
 {
   if (!name_.size()) {
     throw Exception("The queue must have a name", __FILE__, __LINE__);
@@ -92,7 +92,7 @@ void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
   }
 
   amqp_bytes_free(queue_name);
-}
+}*/
 
 
 void Queue::bind(const string& exchange_name, const string& key)
@@ -149,18 +149,18 @@ void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
 
 void Queue::basicConsume()
 {
-  bitset<numConsumerArgs> args;
-  basicConsume(args);
+  /*bitset<numConsumerArgs> args;
+  basicConsume(args);*/
 }
 
 
-void Queue::basicConsume(bitset<numConsumerArgs>& consumer_args)
+/*void Queue::basicConsume(bitset<numConsumerArgs>& consumer_args)
 {
   sendConsumeCommand(consumer_args);
-}
+}*/
 
 
-void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
+/*void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
 {
   amqp_basic_consume(
       conn_,
@@ -240,7 +240,7 @@ void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
 
     notify(body_str); // notify observers
   }
-}
+}*/
 
 
 void Queue::notify(Message& message) const
