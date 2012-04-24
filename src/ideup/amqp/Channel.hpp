@@ -39,6 +39,7 @@
 #include "Exception.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
+#include <bitset>
 
 
 namespace ideup { namespace amqp {
@@ -53,6 +54,7 @@ enum QueueArg {
   QUEUE_AUTO_DELETE,
   numQueueArgs
 };
+
 
 /**
  *
@@ -76,9 +78,9 @@ class Channel
     void unbindQueue();
     void purgeQueue();
     void basicAck();
-    void basicPublics();
-    void basicConsume();
-    void basicCancel();*/
+    void basicPublics();*/
+    void basicConsume(Queue::ptr_t& queue);
+    /*void basicCancel();*/
 
   protected:
   private:

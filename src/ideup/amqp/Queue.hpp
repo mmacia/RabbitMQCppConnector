@@ -38,7 +38,8 @@
 #include "Message.hpp"
 #include "Observer.hpp"
 #include "Exception.hpp"
-#include "Base.hpp"
+//#include "Base.hpp"
+//#include "Channel.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
 #include <bitset>
@@ -47,7 +48,7 @@
 namespace ideup { namespace amqp {
 /////////////////////////////////////////////////////////////////////////////////////
 
-class Observer;
+class Channel;
 
 using namespace std;
 
@@ -58,14 +59,6 @@ enum Events {
   AMQP_CLOSE_CHANNEL
 };
 
-/*enum QueueArg {
-  QUEUE_PASSIVE,
-  QUEUE_DURABLE,
-  QUEUE_EXCLUSIVE,
-  QUEUE_AUTO_DELETE,
-  numQueueArgs
-};*/
-
 enum ConsumerArg {
   CONSUMER_NO_LOCAL,
   CONSUMER_NO_ACK,
@@ -74,40 +67,32 @@ enum ConsumerArg {
 };
 
 
-class Queue : public Base
+class Queue
 {
   public:
     typedef shared_ptr<Queue> ptr_t;
 
-    Queue(amqp_connection_state_t conn, int channel_number, const string& name);
-    ~Queue();
+    Queue(const ideup::amqp::Channel& channel);
+    virtual ~Queue();
 
-    //void declare(bitset<numQueueArgs>& queue_args);
-    void declare();
-    void bind(const string& exchange_name, const string& key);
-    void unbind(const string& exchange_name, const string& key);
-    //void basicConsume(bitset<numConsumerArgs>& consumer_args);
-    void basicConsume();
-    void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
-    string getConsumerTag() { return consumer_tag_; };
     void attach(Observer* obs);
     void notify(Message& message) const;
-    string name() const { return name_; };
+
+    /*void bind(const string& exchange_name, const string& key);
+    void unbind(const string& exchange_name, const string& key);
+    void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
+    string getConsumerTag() { return consumer_tag_; };
+    string name() const { return name_; };*/
 
   protected:
   private:
-    string                  consumer_tag_;
-    string                  name_;
-    int                     channel_number_;
-    amqp_connection_state_t conn_;
-    vector<Observer*>       observers_;
+    vector<Observer*> observers_;
+    const Channel&    channel_;
 
-    //void sendDeclareCommand(bitset<numQueueArgs>& arguments);
+    /*void sendDeclareCommand(bitset<numQueueArgs>& arguments);
     void sendBindCommand(const string& exchange_name, const string& key);
     void sendUnbindCommand(const string& exchange_name, const string& key);
-    //void sendConsumeCommand(bitset<numConsumerArgs>& arguments);
-    void openChannel();
-    void closeChannel();
+    void sendConsumeCommand(bitset<numConsumerArgs>& arguments);*/
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

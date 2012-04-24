@@ -23,9 +23,9 @@ int main(int argc, char* argv[])
   Channel::ptr_t channel = conn->createChannel();
 
   Queue::ptr_t queue = channel->declareQueue("my-first-queue");
-
   queue->attach(new MyConsumer());
-  queue->basicConsume();
+
+  channel->basicConsume(queue);
 
   conn->close();
 }

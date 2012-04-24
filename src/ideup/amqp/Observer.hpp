@@ -36,7 +36,7 @@
 
 #include "common.hpp"
 #include "Message.hpp"
-#include "Queue.hpp"
+//#include "Queue.hpp"
 
 
 namespace ideup { namespace amqp {

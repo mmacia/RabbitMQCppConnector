@@ -10,57 +10,23 @@
 namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-Queue::Queue(amqp_connection_state_t conn, int channel_number, const string& name) :
-  name_(name),
-  channel_number_(channel_number),
-  conn_(conn)
+Queue::Queue(const Channel& channel) :
+  channel_(channel)
 {
-  //openChannel();
 }
 
 
 Queue::~Queue()
 {
-  //closeChannel();
-
   // clean up attached observers
-  if (!observers_.empty()) {
+  /*if (!observers_.empty()) {
     for (auto i = observers_.begin(); i != observers_.end(); ++i) {
       delete (Observer*)*i;
     }
 
     observers_.clear();
-  }
-}
-
-
-void Queue::closeChannel()
-{
-  /*amqp_rpc_reply_t ret = amqp_channel_close(conn_, channel_number_, AMQP_REPLY_SUCCESS);
-
-  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
-    throw Exception("Error closing channel.", ret, __FILE__, __LINE__);
   }*/
 }
-
-
-/*void Queue::openChannel()
-{
-  amqp_channel_open(conn_, channel_number_);
-}*/
-
-
-void Queue::declare()
-{
-  /*auto arguments = bitset<numQueueArgs>();
-  sendDeclareCommand(arguments);*/
-}
-
-
-/*void Queue::declare(bitset<numQueueArgs>& queue_args)
-{
-  sendDeclareCommand(queue_args);
-}*/
 
 
 /*void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
@@ -95,13 +61,13 @@ void Queue::declare()
 }*/
 
 
-void Queue::bind(const string& exchange_name, const string& key)
+/*void Queue::bind(const string& exchange_name, const string& key)
 {
   sendBindCommand(exchange_name, key);
-}
+}*/
 
 
-void Queue::sendBindCommand(const string& exchange_name, const string& key)
+/*void Queue::sendBindCommand(const string& exchange_name, const string& key)
 {
   amqp_queue_bind(
       conn_,
@@ -118,16 +84,16 @@ void Queue::sendBindCommand(const string& exchange_name, const string& key)
     ss << "Cannot bind queue to exchange \"" << exchange_name << "\" with key \"" << key << "\".";
     throw Exception(ss.str(), ret, __FILE__, __LINE__);
   }
-}
+}*/
 
 
-void Queue::unbind(const string& exchange_name, const string& key)
+/*void Queue::unbind(const string& exchange_name, const string& key)
 {
   sendUnbindCommand(exchange_name, key);
-}
+}*/
 
 
-void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
+/*void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
 {
   amqp_queue_unbind(
       conn_,
@@ -144,19 +110,6 @@ void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
     ss << "Cannot unbind queue to exchange \"" << exchange_name << "\" with key \"" << key << "\".";
     throw Exception(ss.str(), ret, __FILE__, __LINE__);
   }
-}
-
-
-void Queue::basicConsume()
-{
-  /*bitset<numConsumerArgs> args;
-  basicConsume(args);*/
-}
-
-
-/*void Queue::basicConsume(bitset<numConsumerArgs>& consumer_args)
-{
-  sendConsumeCommand(consumer_args);
 }*/
 
 
@@ -243,13 +196,13 @@ void Queue::basicConsume()
 }*/
 
 
-void Queue::notify(Message& message) const
+/*void Queue::notify(Message& message) const
 {
   for (auto i = observers_.begin(); i != observers_.end(); ++i) {
     auto observer = (Observer*)*i;
     observer->update(message);
   }
-}
+}*/
 
 
 void Queue::attach(Observer* obs)

@@ -36,6 +36,16 @@ Queue::ptr_t Channel::declareQueue(const string& name)
 }
 
 
+Queue::ptr_t Channel::declareQueue(const string& name, QueueArguments args)
+{
+  return nullptr;
+}
+
+
+void Channel::basicConsume(Queue::ptr_t& queue)
+{
+}
+
 /*Queue* AMQP::createQueue(const string& name)
 {
   if (!isConnected()) {
