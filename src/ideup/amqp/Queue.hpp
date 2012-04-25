@@ -59,6 +59,14 @@ enum Events {
   AMQP_CLOSE_CHANNEL
 };
 
+enum QueueArg {
+  QUEUE_PASSIVE,
+  QUEUE_DURABLE,
+  QUEUE_EXCLUSIVE,
+  QUEUE_AUTO_DELETE,
+  numQueueArgs
+};
+
 enum ConsumerArg {
   CONSUMER_NO_LOCAL,
   CONSUMER_NO_ACK,
@@ -71,8 +79,9 @@ class Queue
 {
   public:
     typedef shared_ptr<Queue> ptr_t;
+    typedef bitset<numQueueArgs> arguments_t;
 
-    Queue(const ideup::amqp::Channel& channel);
+    Queue(const ideup::amqp::Channel& channel, const string& name);
     virtual ~Queue();
 
     void attach(Observer* obs);
@@ -88,9 +97,9 @@ class Queue
   private:
     vector<Observer*> observers_;
     const Channel&    channel_;
+    const string&     name_;
 
-    /*void sendDeclareCommand(bitset<numQueueArgs>& arguments);
-    void sendBindCommand(const string& exchange_name, const string& key);
+    /*void sendBindCommand(const string& exchange_name, const string& key);
     void sendUnbindCommand(const string& exchange_name, const string& key);
     void sendConsumeCommand(bitset<numConsumerArgs>& arguments);*/
 };

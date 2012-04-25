@@ -10,8 +10,9 @@
 namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-Queue::Queue(const Channel& channel) :
-  channel_(channel)
+Queue::Queue(const Channel& channel, const string& name) :
+  channel_(channel),
+  name_(name)
 {
 }
 
@@ -27,38 +28,6 @@ Queue::~Queue()
     observers_.clear();
   }*/
 }
-
-
-/*void Queue::sendDeclareCommand(bitset<numQueueArgs>& arguments)
-{
-  if (!name_.size()) {
-    throw Exception("The queue must have a name", __FILE__, __LINE__);
-  }
-
-  amqp_queue_declare_ok_t* r = amqp_queue_declare(
-      conn_,
-      channel_number_,
-      amqp_cstring_bytes(name_.c_str()),
-      arguments.test(QUEUE_PASSIVE) ? 1 : 0,
-      arguments.test(QUEUE_DURABLE) ? 1 : 0,
-      arguments.test(QUEUE_EXCLUSIVE) ? 1 : 0,
-      arguments.test(QUEUE_AUTO_DELETE) ? 1 : 0,
-      amqp_empty_table);
-
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
-
-  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
-    throw Exception("Error declaring queue.", ret, __FILE__, __LINE__);
-  }
-
-  amqp_bytes_t queue_name = amqp_bytes_malloc_dup(r->queue);
-
-  if (queue_name.bytes == NULL) {
-    throw Exception("Out of memory while copying queue name.", __FILE__, __LINE__);
-  }
-
-  amqp_bytes_free(queue_name);
-}*/
 
 
 /*void Queue::bind(const string& exchange_name, const string& key)

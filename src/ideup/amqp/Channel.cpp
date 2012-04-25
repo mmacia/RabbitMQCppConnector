@@ -32,13 +32,44 @@ Channel::~Channel()
 
 Queue::ptr_t Channel::declareQueue(const string& name)
 {
-  return nullptr;
+  auto args = Queue::arguments_t();
+  return sendDeclareCommand(name, args);
 }
 
 
-Queue::ptr_t Channel::declareQueue(const string& name, QueueArguments args)
+Queue::ptr_t Channel::declareQueue(const string& name, Queue::arguments_t args)
 {
-  return nullptr;
+  return sendDeclareCommand(name, args);
+}
+
+
+Queue::ptr_t Channel::sendDeclareCommand(const string& name, Queue::arguments_t& args)
+{
+  if (!name.size()) {
+    throw Exception("The queue must have a name", __FILE__, __LINE__);
+  }
+
+  amqp_queue_declare_ok_t* r = amqp_queue_declare(
+      conn_,
+      number_,
+      amqp_cstring_bytes(name.c_str()),
+      args.test(QUEUE_PASSIVE) ? 1 : 0,
+      args.test(QUEUE_DURABLE) ? 1 : 0,
+      args.test(QUEUE_EXCLUSIVE) ? 1 : 0,
+      args.test(QUEUE_AUTO_DELETE) ? 1 : 0,
+      amqp_empty_table);
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error declaring queue.", ret, __FILE__, __LINE__);
+  }
+
+  if (r->queue.bytes == NULL) {
+    throw Exception("Out of memory while copying queue name.", __FILE__, __LINE__);
+  }
+
+  return make_shared<Queue>(*this, string(static_cast<char*>(r->queue.bytes), r->queue.len));
 }
 
 
@@ -46,17 +77,5 @@ void Channel::basicConsume(Queue::ptr_t& queue)
 {
 }
 
-/*Queue* AMQP::createQueue(const string& name)
-{
-  if (!isConnected()) {
-    throw Exception("Not connected to RabbitMQ server!", __FILE__, __LINE__);
-  }
-
-  int channel_number = channels_.size() + 1;
-  Queue* q = new Queue(conn_, channel_number, name);
-
-  channels_.push_back(q);
-  return q;
-}*/
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}
