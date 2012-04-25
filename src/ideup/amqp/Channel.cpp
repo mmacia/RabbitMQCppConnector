@@ -73,6 +73,33 @@ Queue::ptr_t Channel::sendDeclareCommand(const string& name, Queue::arguments_t&
 }
 
 
+void Channel::bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key)
+{
+  sendBindCommand(queue_name, exchange_name, routing_key);
+}
+
+
+void Channel::sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key)
+{
+  amqp_queue_bind(
+      conn_,
+      number_,
+      amqp_cstring_bytes(queue_name.c_str()),
+      amqp_cstring_bytes(exchange_name.c_str()),
+      amqp_cstring_bytes(routing_key.c_str()),
+      amqp_empty_table);
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    stringstream ss;
+    ss << "Cannot bind queue \"" << queue_name << "\" to exchange \"" << exchange_name
+       << "\" with key \"" << routing_key << "\".";
+    throw Exception(ss.str(), ret, __FILE__, __LINE__);
+  }
+}
+
+
 void Channel::basicConsume(Queue::ptr_t& queue)
 {
 }

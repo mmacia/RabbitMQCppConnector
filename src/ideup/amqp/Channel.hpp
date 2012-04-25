@@ -63,9 +63,9 @@ class Channel
     //void declareExchange();
     Queue::ptr_t declareQueue(const string& name);
     Queue::ptr_t declareQueue(const string& name, Queue::arguments_t args);
-    /*void deleteQueue();
-    void bindQueue();
-    void unbindQueue();
+    //void deleteQueue();
+    void bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
+    /*void unbindQueue();
     void purgeQueue();
     void basicAck();
     void basicPublics();*/
@@ -78,6 +78,7 @@ class Channel
     const int number_;
 
     Queue::ptr_t sendDeclareCommand(const string& name, Queue::arguments_t& args);
+    void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

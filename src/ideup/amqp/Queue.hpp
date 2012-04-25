@@ -87,8 +87,7 @@ class Queue
     void attach(Observer* obs);
     void notify(Message& message) const;
 
-    /*void bind(const string& exchange_name, const string& key);
-    void unbind(const string& exchange_name, const string& key);
+    /*void unbind(const string& exchange_name, const string& key);
     void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
     string getConsumerTag() { return consumer_tag_; };
     string name() const { return name_; };*/
@@ -99,8 +98,7 @@ class Queue
     const Channel&    channel_;
     const string&     name_;
 
-    /*void sendBindCommand(const string& exchange_name, const string& key);
-    void sendUnbindCommand(const string& exchange_name, const string& key);
+    /*void sendUnbindCommand(const string& exchange_name, const string& key);
     void sendConsumeCommand(bitset<numConsumerArgs>& arguments);*/
 };
 
