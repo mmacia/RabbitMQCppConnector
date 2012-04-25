@@ -221,5 +221,34 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
 }
 
 
+void Channel::deleteQueue(Queue::ptr_t& queue)
+{
+  auto args = Queue::delete_args_t();
+  deleteQueue(queue, args);
+}
+
+void Channel::deleteQueue(Queue::ptr_t& queue, Queue::delete_args_t& args)
+{
+  sendDeleteQueue(queue->getName(), args);
+}
+
+
+void Channel::sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args)
+{
+  amqp_queue_delete(
+      conn_,
+      number_,
+      amqp_cstring_bytes(queue_name.c_str()),
+      args.test(QUEUE_IF_UNUSED) ? 1 : 0,
+      args.test(QUEUE_IF_EMPTY) ? 1 : 0);
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error deleting queue.", ret, __FILE__, __LINE__);
+  }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}

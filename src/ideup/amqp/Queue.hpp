@@ -74,6 +74,12 @@ enum ConsumerArg {
   numConsumerArgs
 };
 
+enum DeleteQueueArg {
+  QUEUE_IF_UNUSED,
+  QUEUE_IF_EMPTY,
+  numDeleteQueueArgs
+};
+
 
 class Queue
 {
@@ -81,6 +87,7 @@ class Queue
     typedef shared_ptr<Queue> ptr_t;
     typedef bitset<numQueueArgs> arguments_t;
     typedef bitset<numConsumerArgs> consumer_args_t;
+    typedef bitset<numDeleteQueueArgs> delete_args_t;
 
     Queue(const ideup::amqp::Channel& channel, const string& name);
     virtual ~Queue();
