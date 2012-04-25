@@ -100,6 +100,33 @@ void Channel::sendBindCommand(const string& queue_name, const string& exchange_n
 }
 
 
+void Channel::unbindQueue(const string& queue_name, const string& exchange_name, const string& routing_key)
+{
+  sendUnbindCommand(queue_name, exchange_name, routing_key);
+}
+
+
+void Channel::sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key)
+{
+  amqp_queue_unbind(
+      conn_,
+      number_,
+      amqp_cstring_bytes(queue_name.c_str()),
+      amqp_cstring_bytes(exchange_name.c_str()),
+      amqp_cstring_bytes(routing_key.c_str()),
+      amqp_empty_table);
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    stringstream ss;
+    ss << "Cannot unbind queue \"" << queue_name << "\" to exchange \"" << exchange_name
+       << "\" with key \"" << routing_key << "\".";
+    throw Exception(ss.str(), ret, __FILE__, __LINE__);
+  }
+}
+
+
 void Channel::basicConsume(Queue::ptr_t& queue)
 {
 }

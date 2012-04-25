@@ -30,32 +30,6 @@ Queue::~Queue()
 }
 
 
-/*void Queue::unbind(const string& exchange_name, const string& key)
-{
-  sendUnbindCommand(exchange_name, key);
-}*/
-
-
-/*void Queue::sendUnbindCommand(const string& exchange_name, const string& key)
-{
-  amqp_queue_unbind(
-      conn_,
-      channel_number_,
-      amqp_cstring_bytes(name_.c_str()),
-      amqp_cstring_bytes(exchange_name.c_str()),
-      amqp_cstring_bytes(key.c_str()),
-      amqp_empty_table);
-
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
-
-  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
-    stringstream ss;
-    ss << "Cannot unbind queue to exchange \"" << exchange_name << "\" with key \"" << key << "\".";
-    throw Exception(ss.str(), ret, __FILE__, __LINE__);
-  }
-}*/
-
-
 /*void Queue::sendConsumeCommand(bitset<numConsumerArgs>& arguments)
 {
   amqp_basic_consume(
