@@ -80,26 +80,23 @@ class Queue
   public:
     typedef shared_ptr<Queue> ptr_t;
     typedef bitset<numQueueArgs> arguments_t;
+    typedef bitset<numConsumerArgs> consumer_args_t;
 
     Queue(const ideup::amqp::Channel& channel, const string& name);
     virtual ~Queue();
 
-    void attach(Observer* obs);
-    void notify(Message& message) const;
-
-    /*void unbind(const string& exchange_name, const string& key);
-    void setConsumerTag(const string& tag) { consumer_tag_ = tag; };
-    string getConsumerTag() { return consumer_tag_; };
-    string name() const { return name_; };*/
+    void   setConsumerTag(const string& tag) { consumer_tag_ = tag; };
+    string getConsumerTag() const { return consumer_tag_; };
+    string getName() const { return name_; };
+    void   attach(Observer* obs);
+    void   notify(Message& message) const;
 
   protected:
   private:
     vector<Observer*> observers_;
     const Channel&    channel_;
     const string&     name_;
-
-    /*void sendUnbindCommand(const string& exchange_name, const string& key);
-    void sendConsumeCommand(bitset<numConsumerArgs>& arguments);*/
+    string            consumer_tag_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

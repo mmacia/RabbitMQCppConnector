@@ -62,14 +62,15 @@ class Channel
 
     //void declareExchange();
     Queue::ptr_t declareQueue(const string& name);
-    Queue::ptr_t declareQueue(const string& name, Queue::arguments_t args);
+    Queue::ptr_t declareQueue(const string& name, Queue::arguments_t& args);
     //void deleteQueue();
     void bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void unbindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     /*void purgeQueue();
     void basicAck();
-    void basicPublics();*/
+    void basicPublish();*/
     void basicConsume(Queue::ptr_t& queue);
+    void basicConsume(Queue::ptr_t& queue, Queue::consumer_args_t& args);
     /*void basicCancel();*/
 
   protected:
@@ -80,6 +81,7 @@ class Channel
     Queue::ptr_t sendDeclareCommand(const string& name, Queue::arguments_t& args);
     void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
+    void         sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
