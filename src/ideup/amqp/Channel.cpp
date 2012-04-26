@@ -263,11 +263,24 @@ void Channel::sendBasicCancel(const string& consumer_tag)
   req.consumer_tag = amqp_cstring_bytes(consumer_tag.c_str());
   req.nowait = 0;
 
-  amqp_rpc_reply_t ret = amqp_simple_rpc(m_connection, m_channel, AMQP_BASIC_CANCEL_METHOD, replies, &req);
+  amqp_rpc_reply_t ret = amqp_simple_rpc(conn_, number_, AMQP_BASIC_CANCEL_METHOD, replies, &req);
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
-    throw Exception("Error canceling queue.", ret, __FILE__, __DATE__);
+    throw Exception("Error canceling queue.", ret, __FILE__, __LINE__);
   }
+}
+
+
+void Channel::purgeQueue(Queue::ptr_t& queue, bool no_wait)
+{
+  sendPurgeQueueCommand(queue->getName(), no_wait);
+}
+
+
+void Channel::sendPurgeQueueCommand(const string& queue_name, bool no_wait)
+{
+  amqp_queue_purge_ok_t ret = amqp_queue_purge(conn_, number_, amqp_cstring_bytes(queue_name.c_str()));
+
 }
 
 

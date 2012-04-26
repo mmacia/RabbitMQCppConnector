@@ -67,8 +67,8 @@ class Channel
     void deleteQueue(Queue::ptr_t& queue, Queue::delete_args_t& args);
     void bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void unbindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
-    /*void purgeQueue();
-    void basicAck();
+    void purgeQueue(Queue::ptr_t& queue, bool no_wait = false);
+    /*void basicAck();
     void basicPublish();*/
     void basicConsume(Queue::ptr_t& queue);
     void basicConsume(Queue::ptr_t& queue, Queue::consumer_args_t& args);
@@ -85,6 +85,7 @@ class Channel
     void         sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args);
     void         sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args);
     void         sendBasicCancel(const string& consumer_tag);
+    void         sendPurgeQueueCommand(const string& queue_name, bool no_wait);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
