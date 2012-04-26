@@ -250,5 +250,26 @@ void Channel::sendDeleteQueue(const string& queue_name, Queue::delete_args_t& ar
 }
 
 
+void Channel::basicCancel(const string& consumer_tag)
+{
+  sendBasicCancel(consumer_tag);
+}
+
+
+void Channel::sendBasicCancel(const string& consumer_tag)
+{
+  amqp_method_number_t replies[2] = { AMQP_BASIC_CANCEL_OK_METHOD, 0 };
+  amqp_basic_cancel_t req;
+  req.consumer_tag = amqp_cstring_bytes(consumer_tag.c_str());
+  req.nowait = 0;
+
+  amqp_rpc_reply_t ret = amqp_simple_rpc(m_connection, m_channel, AMQP_BASIC_CANCEL_METHOD, replies, &req);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error canceling queue.", ret, __FILE__, __DATE__);
+  }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}

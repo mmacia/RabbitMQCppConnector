@@ -72,7 +72,7 @@ class Channel
     void basicPublish();*/
     void basicConsume(Queue::ptr_t& queue);
     void basicConsume(Queue::ptr_t& queue, Queue::consumer_args_t& args);
-    /*void basicCancel();*/
+    void basicCancel(const string& consumer_tag);
 
   protected:
   private:
@@ -84,6 +84,7 @@ class Channel
     void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void         sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args);
     void         sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args);
+    void         sendBasicCancel(const string& consumer_tag);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
