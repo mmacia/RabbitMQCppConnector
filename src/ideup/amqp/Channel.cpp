@@ -21,11 +21,13 @@ Channel::Channel(const amqp_connection_state_t& conn, const int number) :
 
 Channel::~Channel()
 {
-  // close channel
-  amqp_rpc_reply_t ret = amqp_channel_close(conn_, number_, AMQP_REPLY_SUCCESS);
+  if (number_ > 0) {
+    // close channel
+    amqp_rpc_reply_t ret = amqp_channel_close(conn_, number_, AMQP_REPLY_SUCCESS);
 
-  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
-    throw Exception("Error closing channel.", ret, __FILE__, __LINE__);
+    if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+      throw Exception("Error closing channel.", ret, __FILE__, __LINE__);
+    }
   }
 }
 
