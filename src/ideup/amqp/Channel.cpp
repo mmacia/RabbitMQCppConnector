@@ -279,8 +279,20 @@ void Channel::purgeQueue(Queue::ptr_t& queue, bool no_wait)
 
 void Channel::sendPurgeQueueCommand(const string& queue_name, bool no_wait)
 {
-  amqp_queue_purge_ok_t ret = amqp_queue_purge(conn_, number_, amqp_cstring_bytes(queue_name.c_str()));
+  amqp_queue_delete_t s;
 
+  memset(&s, 0, sizeof(s));
+  s.ticket = 0;
+  s.queue = amqp_cstring_bytes(queue_name.c_str());
+  s.nowait = no_wait;
+
+  amqp_method_number_t method_ok = AMQP_QUEUE_PURGE_OK_METHOD;
+
+  amqp_rpc_reply_t ret = amqp_simple_rpc(conn_, number_, AMQP_QUEUE_PURGE_METHOD, &method_ok , &s);
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error purging queue.", ret, __FILE__, __LINE__);
+  }
 }
 
 
