@@ -4,6 +4,7 @@
 #include "../src/ideup/amqp/Channel.hpp"
 #include "../src/ideup/amqp/Queue.hpp"
 #include "../src/ideup/amqp/Message.hpp"
+#include "../src/ideup/amqp/Exception.hpp"
 
 using namespace ideup::amqp;
 
@@ -19,13 +20,21 @@ class MyConsumer : public Observer
 
 int main(int argc, char* argv[])
 {
-  Connection::ptr_t conn = ConnectionFactory::newConnection();
-  Channel::ptr_t channel = conn->createChannel();
+  try {
+    Connection::ptr_t conn = ConnectionFactory::newConnection();
+    Channel::ptr_t channel = conn->createChannel();
 
-  Queue::ptr_t queue = channel->declareQueue("my-first-queue");
-  queue->attach(new MyConsumer());
+    Queue::ptr_t queue = channel->declareQueue("my-first-queue");
+    queue->attach(new MyConsumer());
 
-  channel->basicConsume(queue);
+    channel->basicConsume(queue);
 
-  conn->close();
+    conn->close();
+  }
+  catch (Exception& e) {
+    cerr << "AMQP Exception: " << e.what() << endl;
+  }
+  catch (exception& e) {
+    cerr << "Standard Exception: " << e.what() << endl;
+  }
 }
