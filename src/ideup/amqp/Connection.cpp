@@ -59,6 +59,7 @@ void Connection::close()
   amqp_connection_close(conn_, AMQP_REPLY_SUCCESS);
   amqp_destroy_connection(conn_);
   ::close(sock_);
+  sock_ = 0;
 }
 
 
