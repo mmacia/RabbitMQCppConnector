@@ -4,6 +4,11 @@ namespace ideup { namespace amqp {
 //////////////////////////////////////////////////////////////////////////////////////
 
 Connection::Connection(string host, int port, string user, string pass, string vhost) :
+  host_(host),
+  user_(user),
+  password_(pass),
+  vhost_(vhost),
+  port_(port),
   sock_(0),
   channel_next_(0)
 {
