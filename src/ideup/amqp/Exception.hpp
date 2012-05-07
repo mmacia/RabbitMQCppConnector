@@ -37,6 +37,7 @@
 #include "common.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
+#include <exception>
 
 
 namespace ideup { namespace amqp {
@@ -49,7 +50,7 @@ using namespace std;
  *
  * @author Moisés Maciá <mmacia@gmail.com>
  */
-class Exception
+class Exception : public exception
 {
   public:
     /**
@@ -69,15 +70,13 @@ class Exception
      * @param line     Line number on wich exception was raised (for debugging pourposes only).
      */
     Exception(const string& message, amqp_rpc_reply_t& response, const string& file = "<unknwon>", int line = 0);
-    /**
-     * Default destructor
-     */
-    ~Exception();
+
+    virtual ~Exception() throw() {};
 
     /**
      * Gets the exception message.
      */
-    string message() const { return message_; };
+    virtual const char* what() const throw() { return message_.c_str(); };
     /**
      * Gets the file in wich exception was raised.
      */

@@ -62,10 +62,5 @@ Exception::Exception(const string& message, amqp_rpc_reply_t& response, const st
   }
 }
 
-
-Exception::~Exception()
-{
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}
