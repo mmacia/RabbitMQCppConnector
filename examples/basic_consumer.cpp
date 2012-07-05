@@ -21,8 +21,8 @@ class MyConsumer : public Observer
 int main(int argc, char* argv[])
 {
   try {
-    Connection::ptr_t conn = ConnectionFactory::newConnection();
-    Channel::ptr_t channel = conn->createChannel();
+    shared_ptr<Connection> conn = ConnectionFactory::newConnection();
+    shared_ptr<Channel> channel = conn->createChannel();
 
     Queue::ptr_t queue = channel->declareQueue("my-first-queue");
     queue->attach(new MyConsumer());

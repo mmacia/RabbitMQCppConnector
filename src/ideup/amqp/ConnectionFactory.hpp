@@ -58,7 +58,7 @@ class ConnectionFactory
      * @param  pass
      * @param  vhost
      */
-    static Connection::ptr_t newConnection(
+    static shared_ptr<Connection> newConnection(
         const string& host  = "localhost",
         int port            = 5672,
         const string& user  = "guest",

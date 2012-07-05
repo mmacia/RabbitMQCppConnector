@@ -11,19 +11,18 @@ namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Channel::Channel(const amqp_connection_state_t& conn, const int number) :
-  conn_(conn),
-  number_(number)
+Channel::Channel(/*amqp_connection_state_t& conn, const int number*/ Connection* conn) :
+  conn_(conn)
 {
-  amqp_channel_open(conn_, number_);
+  amqp_channel_open(conn_->getConnection(), conn_->getChannel());
 }
 
 
 Channel::~Channel()
 {
-  if (number_ > 0) {
+  if (conn_->getChannel() > 0 && conn_->getConnection() != 0) {
     // close channel
-    amqp_rpc_reply_t ret = amqp_channel_close(conn_, number_, AMQP_REPLY_SUCCESS);
+    amqp_rpc_reply_t ret = amqp_channel_close(conn_->getConnection(), conn_->getChannel(), AMQP_REPLY_SUCCESS);
 
     if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
       throw Exception("Error closing channel.", ret, __FILE__, __LINE__);
@@ -52,8 +51,8 @@ Queue::ptr_t Channel::sendDeclareCommand(const string& name, Queue::arguments_t&
   }
 
   amqp_queue_declare_ok_t* r = amqp_queue_declare(
-      conn_,
-      number_,
+      conn_->getConnection(),
+      conn_->getChannel(),
       amqp_cstring_bytes(name.c_str()),
       args.test(QUEUE_PASSIVE) ? 1 : 0,
       args.test(QUEUE_DURABLE) ? 1 : 0,
@@ -61,7 +60,7 @@ Queue::ptr_t Channel::sendDeclareCommand(const string& name, Queue::arguments_t&
       args.test(QUEUE_AUTO_DELETE) ? 1 : 0,
       amqp_empty_table);
 
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error declaring queue.", ret, __FILE__, __LINE__);
@@ -84,14 +83,14 @@ void Channel::bindQueue(const string& queue_name, const string& exchange_name, c
 void Channel::sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key)
 {
   amqp_queue_bind(
-      conn_,
-      number_,
+      conn_->getConnection(),
+      conn_->getChannel(),
       amqp_cstring_bytes(queue_name.c_str()),
       amqp_cstring_bytes(exchange_name.c_str()),
       amqp_cstring_bytes(routing_key.c_str()),
       amqp_empty_table);
 
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     stringstream ss;
@@ -111,14 +110,14 @@ void Channel::unbindQueue(const string& queue_name, const string& exchange_name,
 void Channel::sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key)
 {
   amqp_queue_unbind(
-      conn_,
-      number_,
+      conn_->getConnection(),
+      conn_->getChannel(),
       amqp_cstring_bytes(queue_name.c_str()),
       amqp_cstring_bytes(exchange_name.c_str()),
       amqp_cstring_bytes(routing_key.c_str()),
       amqp_empty_table);
 
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     stringstream ss;
@@ -145,8 +144,8 @@ void Channel::basicConsume(Queue::ptr_t& queue, Queue::consumer_args_t& args)
 void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args)
 {
   amqp_basic_consume(
-      conn_,
-      number_,
+      conn_->getConnection(),
+      conn_->getChannel(),
       amqp_cstring_bytes(queue->getName().c_str()),
       amqp_cstring_bytes(queue->getConsumerTag().c_str()),
       args.test(CONSUMER_NO_LOCAL) ? 1 : 0,
@@ -154,7 +153,7 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
       args.test(CONSUMER_EXCLUSIVE) ? 1 : 0,
       amqp_empty_table);
 
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Unable to send consume command", ret, __FILE__, __LINE__);
@@ -164,9 +163,9 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
 
   while (true) {
     amqp_frame_t frame;
-    amqp_maybe_release_buffers(conn_);
+    amqp_maybe_release_buffers(conn_->getConnection());
 
-    result = amqp_simple_wait_frame(conn_, &frame);
+    result = amqp_simple_wait_frame(conn_->getConnection(), &frame);
     if (result < 0) {
       throw Exception("Error in header frame", __FILE__, __LINE__);
     }
@@ -183,7 +182,7 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
 
     // TODO fetch message metadata
 
-    result = amqp_simple_wait_frame(conn_, &frame);
+    result = amqp_simple_wait_frame(conn_->getConnection(), &frame);
     if (result < 0) {
       throw Exception("Message frame is invalid!", __FILE__, __LINE__);
     }
@@ -200,7 +199,7 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
     amqp_bytes_t body = amqp_bytes_malloc(body_size);
 
     while (body_received < body_size) {
-      result = amqp_simple_wait_frame(conn_, &frame);
+      result = amqp_simple_wait_frame(conn_->getConnection(), &frame);
       if (result < 0) {
         return;
       }
@@ -238,13 +237,13 @@ void Channel::deleteQueue(Queue::ptr_t& queue, Queue::delete_args_t& args)
 void Channel::sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args)
 {
   amqp_queue_delete(
-      conn_,
-      number_,
+      conn_->getConnection(),
+      conn_->getChannel(),
       amqp_cstring_bytes(queue_name.c_str()),
       args.test(QUEUE_IF_UNUSED) ? 1 : 0,
       args.test(QUEUE_IF_EMPTY) ? 1 : 0);
 
-  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_);
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error deleting queue.", ret, __FILE__, __LINE__);
@@ -265,7 +264,12 @@ void Channel::sendBasicCancel(const string& consumer_tag)
   req.consumer_tag = amqp_cstring_bytes(consumer_tag.c_str());
   req.nowait = 0;
 
-  amqp_rpc_reply_t ret = amqp_simple_rpc(conn_, number_, AMQP_BASIC_CANCEL_METHOD, replies, &req);
+  amqp_rpc_reply_t ret = amqp_simple_rpc(
+      conn_->getConnection(),
+      conn_->getChannel(),
+      AMQP_BASIC_CANCEL_METHOD,
+      replies,
+      &req);
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error canceling queue.", ret, __FILE__, __LINE__);
@@ -290,7 +294,12 @@ void Channel::sendPurgeQueueCommand(const string& queue_name, bool no_wait)
 
   amqp_method_number_t method_ok = AMQP_QUEUE_PURGE_OK_METHOD;
 
-  amqp_rpc_reply_t ret = amqp_simple_rpc(conn_, number_, AMQP_QUEUE_PURGE_METHOD, &method_ok , &s);
+  amqp_rpc_reply_t ret = amqp_simple_rpc(
+      conn_->getConnection(),
+      conn_->getChannel(),
+      AMQP_QUEUE_PURGE_METHOD,
+      &method_ok,
+      &s);
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error purging queue.", ret, __FILE__, __LINE__);

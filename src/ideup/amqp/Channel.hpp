@@ -37,6 +37,7 @@
 #include "common.hpp"
 #include "Queue.hpp"
 #include "Exception.hpp"
+#include "Connection.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
 #include <bitset>
@@ -47,6 +48,8 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
+class Connection;
+
 /**
  *
  * @author Moisés Maciá <mmacia@gmail.com>
@@ -54,9 +57,7 @@ using namespace std;
 class Channel
 {
   public:
-    typedef shared_ptr<Channel> ptr_t;
-
-    Channel(const amqp_connection_state_t& conn, const int number);
+    Channel(Connection* conn);
     virtual ~Channel();
 
 
@@ -76,8 +77,7 @@ class Channel
 
   protected:
   private:
-    const amqp_connection_state_t conn_;
-    const int number_;
+    Connection* conn_;
 
     Queue::ptr_t sendDeclareCommand(const string& name, Queue::arguments_t& args);
     void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");

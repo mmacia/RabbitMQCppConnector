@@ -28,13 +28,14 @@ bool Connection::isConnected()
 }
 
 
-Channel::ptr_t Connection::createChannel()
+shared_ptr<Channel> Connection::createChannel()
 {
   if (!isConnected()) {
     connect();
   }
 
-  return make_shared<Channel>(conn_, ++channel_next_);
+  ++channel_next_;
+  return make_shared<Channel>(this);
 }
 
 
@@ -50,6 +51,18 @@ string Connection::getHost()
 }
 
 
+amqp_connection_state_t Connection::getConnection() const
+{
+  return conn_;
+}
+
+
+int Connection::getChannel() const
+{
+  return channel_next_;
+}
+
+
 void Connection::close()
 {
   if (!isConnected()) {
@@ -58,6 +71,8 @@ void Connection::close()
 
   amqp_connection_close(conn_, AMQP_REPLY_SUCCESS);
   amqp_destroy_connection(conn_);
+  conn_ = 0;
+
   ::close(sock_);
   sock_ = 0;
 }

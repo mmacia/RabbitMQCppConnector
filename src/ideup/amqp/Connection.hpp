@@ -43,6 +43,8 @@
 namespace ideup { namespace amqp {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+class Channel;
+
 /**
  * class Connection
  *
@@ -51,8 +53,6 @@ namespace ideup { namespace amqp {
 class Connection
 {
   public:
-    typedef shared_ptr<Connection> ptr_t;
-
      /**
       * @param  host
       * @param  port
@@ -70,7 +70,7 @@ class Connection
     /**
      * @return Channel
      */
-    Channel::ptr_t createChannel();
+    shared_ptr<Channel> createChannel();
 
     /**
      * @param  host
@@ -99,6 +99,9 @@ class Connection
     /**
      */
     void close();
+
+    amqp_connection_state_t getConnection() const;
+    int getChannel() const;
 
 
   private:
