@@ -34,7 +34,7 @@ Channel::ptr_t Connection::createChannel()
     connect();
   }
 
-  return make_shared<Channel>(conn_, channel_next_);
+  return make_shared<Channel>(conn_, ++channel_next_);
 }
 
 
