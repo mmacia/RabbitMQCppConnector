@@ -11,7 +11,7 @@ namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Channel::Channel(/*amqp_connection_state_t& conn, const int number*/ Connection* conn) :
+Channel::Channel(Connection* conn) :
   conn_(conn)
 {
   amqp_channel_open(conn_->getConnection(), conn_->getChannel());
