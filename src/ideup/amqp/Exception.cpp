@@ -23,12 +23,14 @@ Exception::Exception(const string& message, amqp_rpc_reply_t& response, const st
   file_(file),
   line_(line)
 {
+  message_.append(" ");
+
   switch (response.reply_type) {
     case AMQP_RESPONSE_NORMAL:
       return;
 
     case AMQP_RESPONSE_NONE:
-      message_.append(" Missing RPC reply type!");
+      message_.append("Missing RPC reply type!");
       break;
 
     case AMQP_RESPONSE_LIBRARY_EXCEPTION:
@@ -41,7 +43,7 @@ Exception::Exception(const string& message, amqp_rpc_reply_t& response, const st
             amqp_connection_close_t *m = (amqp_connection_close_t *) response.reply.decoded;
 
             stringstream ss;
-            ss << " Server connection error(" << (int)m->reply_code << "): ";
+            ss << "Server connection error(" << (int)m->reply_code << "): ";
             message_.append(ss.str().append((char*)m->reply_text.bytes, (int)m->reply_text.len));
             break;
           }
@@ -49,13 +51,14 @@ Exception::Exception(const string& message, amqp_rpc_reply_t& response, const st
             amqp_channel_close_t *m = (amqp_channel_close_t *) response.reply.decoded;
 
             stringstream ss;
-            ss << " Server channel error(" << (int)m->reply_code << "): ";
+            ss << "Server channel error(" << (int)m->reply_code << "): ";
             message_.append(ss.str().append((char*)m->reply_text.bytes, (int)m->reply_text.len));
             break;
           }
           default:
             stringstream ss;
-            ss << " Unknown server error, method id 0x" << (uint32_t)response.reply.id;
+            ss << "Unknown server error, method id 0x" << (uint32_t)response.reply.id;
+            message_.append(ss.str());
             break;
         }
         break;
