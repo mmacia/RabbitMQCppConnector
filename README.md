@@ -1,6 +1,14 @@
 # RabbitMQ C++ Connector
 
-Status: **WIP, not usable yet.**
+Status: **WIP, not fully usable yet.**
+
+## What is working? ##
+
+See `examples` directory.
+
+- Connection to AMQP servers.
+- Declare Queues.
+- Basic consumer.
 
 ## What it is RabbitMQ C++ Connector?
 
