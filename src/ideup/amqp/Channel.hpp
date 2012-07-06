@@ -38,6 +38,7 @@
 #include "Queue.hpp"
 #include "Exception.hpp"
 #include "Connection.hpp"
+#include "Message.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
 #include <bitset>
@@ -69,10 +70,15 @@ class Channel
     void bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void unbindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void purgeQueue(Queue::ptr_t& queue, bool no_wait = false);
-    /*void basicAck();
-    void basicPublish();*/
+    /*void basicAck();*/
+
+    void basicPublish(Message::ptr_t message, const string& exchange_name);
+    void basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key);
+    void basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key, Queue::publisher_args_t args);
+
     void basicConsume(Queue::ptr_t& queue);
     void basicConsume(Queue::ptr_t& queue, Queue::consumer_args_t& args);
+
     void basicCancel(const string& consumer_tag);
 
   protected:
@@ -83,6 +89,7 @@ class Channel
     void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
     void         sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args);
+    void         sendBasicPublishCommand(Message::ptr_t message, const string& exchange_name, const string& routing_key, Queue::publisher_args_t& args);
     void         sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args);
     void         sendBasicCancel(const string& consumer_tag);
     void         sendPurgeQueueCommand(const string& queue_name, bool no_wait);

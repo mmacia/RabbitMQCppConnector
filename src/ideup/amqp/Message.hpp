@@ -59,10 +59,13 @@ class Message
     virtual ~Message();
 
     string getBody() const;
+    void addProperty(const string& name, const string& value);
+    const amqp_basic_properties_t* getProperties() const;
 
   protected:
   private:
     string body_;
+    amqp_basic_properties_t props_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////

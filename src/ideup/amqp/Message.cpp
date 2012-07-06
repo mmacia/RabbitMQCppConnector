@@ -33,5 +33,17 @@ string Message::getBody() const
 }
 
 
+void Message::addProperty(const string& name, const string& value)
+{
+  // TODO implement properties setter
+}
+
+
+const amqp_basic_properties_t* Message::getProperties() const
+{
+  return &props_;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 }}

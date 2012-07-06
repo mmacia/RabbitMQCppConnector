@@ -74,6 +74,12 @@ enum ConsumerArg {
   numConsumerArgs
 };
 
+enum PublisherArg {
+  PUBLISHER_MANDATORY,
+  PUBLISHER_INMEDIATE,
+  numPublisherArgs
+};
+
 enum DeleteQueueArg {
   QUEUE_IF_UNUSED,
   QUEUE_IF_EMPTY,
@@ -87,6 +93,7 @@ class Queue
     typedef shared_ptr<Queue> ptr_t;
     typedef bitset<numQueueArgs> arguments_t;
     typedef bitset<numConsumerArgs> consumer_args_t;
+    typedef bitset<numPublisherArgs> publisher_args_t;
     typedef bitset<numDeleteQueueArgs> delete_args_t;
 
     Queue(const ideup::amqp::Channel& channel, const string& name);

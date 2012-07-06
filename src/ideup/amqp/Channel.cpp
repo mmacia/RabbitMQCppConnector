@@ -228,6 +228,7 @@ void Channel::deleteQueue(Queue::ptr_t& queue)
   deleteQueue(queue, args);
 }
 
+
 void Channel::deleteQueue(Queue::ptr_t& queue, Queue::delete_args_t& args)
 {
   sendDeleteQueue(queue->getName(), args);
@@ -248,6 +249,52 @@ void Channel::sendDeleteQueue(const string& queue_name, Queue::delete_args_t& ar
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error deleting queue.", ret, __FILE__, __LINE__);
   }
+}
+
+
+void Channel::basicPublish(Message::ptr_t message, const string& exchange_name)
+{
+  basicPublish(message, exchange_name, "");
+}
+
+
+void Channel::basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key)
+{
+  auto args = Queue::publisher_args_t();
+
+  basicPublish(message, exchange_name, routing_key, args);
+}
+
+
+void Channel::basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key, Queue::publisher_args_t args)
+{
+  sendBasicPublishCommand(message, exchange_name, routing_key, args);
+}
+
+
+void Channel::sendBasicPublishCommand(Message::ptr_t message,
+                                      const string& exchange_name,
+                                      const string& routing_key,
+                                      Queue::publisher_args_t& args)
+{
+  amqp_basic_publish(
+      conn_->getConnection(),
+      conn_->getChannel(),
+      amqp_cstring_bytes(exchange_name.c_str()),
+      amqp_cstring_bytes(routing_key.c_str()),
+      args.test(PUBLISHER_MANDATORY) ? 1 : 0,
+      args.test(PUBLISHER_INMEDIATE) ? 1 : 0,
+      message->getProperties(),
+      amqp_cstring_bytes(message->getBody().c_str())
+  );
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Unable to send publish command", ret, __FILE__, __LINE__);
+  }
+
+  // TODO check return message
 }
 
 
