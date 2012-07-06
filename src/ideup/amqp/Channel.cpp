@@ -31,6 +31,44 @@ Channel::~Channel()
 }
 
 
+void Channel::declareExchange(const string& name, const string& type)
+{
+  auto args = Queue::exchange_args_t();
+  sendDeclareExchangeCommand(name, type, args);
+}
+
+void Channel::declareExchange(const string& name, const string& type, Queue::exchange_args_t args)
+{
+  // check type
+  if (type != "direct" || type != "fanout" || type != "topic") {
+    throw Exception("Invalid exchange type.", __FILE__, __LINE__);
+  }
+
+  sendDeclareExchangeCommand(name, type, args);
+}
+
+
+void Channel::sendDeclareExchangeCommand(const string& name, const string& type, Queue::exchange_args_t& args)
+{
+  /*amqp_exchange_declare(
+      conn_->getConnection(),
+      conn_->getChannel(),
+      amqp_cstring_bytes(name.c_str()),
+      amqp_cstring_bytes(type.c_str()),
+      args.test(EXCHANGE_PASSIVE) ? 1 : 0,
+      args.test(EXCHANGE_DURABLE) ? 1 : 0,
+      args.test(EXCHANGE_AUTO_DELETE) ? 1 : 0,
+      AMQP_EMPTY_TABLE
+  );
+
+  amqp_rpc_reply_t ret = amqp_get_rpc_reply(conn_->getConnection());
+
+  if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
+    throw Exception("Error declaring exchange.", ret, __FILE__, __LINE__);
+  }*/
+}
+
+
 Queue::ptr_t Channel::declareQueue(const string& name)
 {
   auto args = Queue::arguments_t();

@@ -62,7 +62,8 @@ class Channel
     virtual ~Channel();
 
 
-    //void declareExchange();
+    void declareExchange(const string& name, const string& type);
+    void declareExchange(const string& name, const string& type, Queue::exchange_args_t args);
 
     Queue::ptr_t declareQueue(const string& name);
     Queue::ptr_t declareQueue(const string& name, Queue::arguments_t& args);
@@ -87,9 +88,10 @@ class Channel
   private:
     Connection* conn_;
 
+    void         sendDeclareExchangeCommand(const string& name, const string& type, Queue::exchange_args_t& args);
     Queue::ptr_t sendDeclareCommand(const string& name, Queue::arguments_t& args);
-    void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
-    void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key = "");
+    void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key);
+    void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key);
     void         sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_t& args);
     void         sendBasicPublishCommand(Message::ptr_t message, const string& exchange_name, const string& routing_key, Queue::publisher_args_t& args);
     void         sendDeleteQueue(const string& queue_name, Queue::delete_args_t& args);
