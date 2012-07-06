@@ -54,7 +54,6 @@ class Message
   public:
     typedef shared_ptr<Message> ptr_t;
 
-    Message(const char* message, int len);
     Message(const string& message);
     virtual ~Message();
 

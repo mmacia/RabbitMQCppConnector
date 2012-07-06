@@ -214,7 +214,7 @@ void Channel::sendBasicConsumeCommand(Queue::ptr_t& queue, Queue::consumer_args_
       body_received += frame.payload.body_fragment.len;
     }
 
-    Message msg(static_cast<char*>(body.bytes), body.len);
+    Message msg(string(static_cast<char*>(body.bytes), body.len));
     amqp_bytes_free(body);
 
     queue->notify(msg); // notify observers

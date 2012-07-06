@@ -8,12 +8,13 @@ set(CMAKE_CXX_FLAGS "-std=c++0x")
 include_directories("${rabbitmqcppconn_SOURCE_DIR}/ideup/amqp" )
 link_directories("${rabbitmqcppconn_BINARY_DIR}" )
 
-file(GLOB SOURCES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-
 # Include RabbitMQ C headers
 list(APPEND LIB_INCLUDE_DIR "${CMAKE_BINARY_DIR}/lib/rabbitmq-c")
 list(APPEND LIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../lib/rabbitmq-c")
 include_directories(${LIB_INCLUDE_DIR})
 
-add_executable(basic_consumer ${SOURCES_CPP})
+add_executable(basic_consumer "${CMAKE_CURRENT_SOURCE_DIR}/basic_consumer.cpp")
 target_link_libraries(basic_consumer rabbitmqcppconn)
+
+add_executable(basic_publisher "${CMAKE_CURRENT_SOURCE_DIR}/basic_publisher.cpp")
+target_link_libraries(basic_publisher rabbitmqcppconn)

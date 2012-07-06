@@ -63,8 +63,10 @@ class Channel
 
 
     //void declareExchange();
+
     Queue::ptr_t declareQueue(const string& name);
     Queue::ptr_t declareQueue(const string& name, Queue::arguments_t& args);
+
     void deleteQueue(Queue::ptr_t& queue);
     void deleteQueue(Queue::ptr_t& queue, Queue::delete_args_t& args);
     void bindQueue(const string& queue_name, const string& exchange_name, const string& routing_key = "");

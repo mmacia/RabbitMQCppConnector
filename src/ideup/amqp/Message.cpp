@@ -11,11 +11,6 @@ namespace ideup { namespace amqp {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Message::Message(const char* message, int len)
-{
-  body_ = string(message, len);
-}
-
 Message::Message(const string& message)
 {
   body_ = message;
