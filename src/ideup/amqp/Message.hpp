@@ -45,6 +45,12 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
+enum DeliveryMode {
+  DELIVER_NON_PERSISTENT = 1,
+  DELIVER_PERSISTENT = 2
+};
+
+
 /**
  *
  * @author Moisés Maciá <mmacia@gmail.com>
@@ -58,12 +64,65 @@ class Message
     virtual ~Message();
 
     string getBody() const;
-    void addProperty(const string& name, const string& value);
-    const amqp_basic_properties_t* getProperties() const;
+
+    void setContentType(const string& mime);
+    string getContentType() const;
+
+    void setDeliveryMode(DeliveryMode mode);
+    DeliveryMode getDeliveryMode() const;
+
+    void setContentEncoding(const string& encoding);
+    string getContentEncoding() const;
+
+    void setMessageId(const string& id);
+    string getMessageId() const;
+
+    void setUserId(const string& id);
+    string getUserId() const;
+
+    void setAppId(const string& id);
+    string getAppId() const;
+
+    void setClusterId(const string& id);
+    string getClusterId() const;
+
+    void setCorrelationId(const string& id);
+    string getCorrelationId() const;
+
+    void setPriority(uint8_t priority);
+    uint8_t getPriority() const;
+
+    void setTimestamp(uint64_t timestamp);
+    uint64_t getTimestamp() const;
+
+    void setExpiration(const string& expiration);
+    string getExpiration() const;
+
+    void setType(const string& type);
+    string getType() const;
+
+    void setReplyTo(const string& replyTo);
+    string getReplyTo() const;
+
+    const amqp_basic_properties_t* getProperties();
 
   protected:
   private:
     string body_;
+    string contentType_;
+    uint8_t deliveryMode_;
+    string contentEncoding_;
+    string messageId_;
+    string userId_;
+    string appId_;
+    string clusterId_;
+    string correlationId_;
+    uint8_t priority_;
+    uint64_t timestamp_;
+    string expiration_;
+    string type_;
+    string replyTo_;
+
     amqp_basic_properties_t props_;
 };
 
