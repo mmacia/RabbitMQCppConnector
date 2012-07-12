@@ -50,14 +50,13 @@ void Channel::declareExchange(const string& name, const string& type, Exchange::
 
 void Channel::sendDeclareExchangeCommand(const string& name, const string& type, Exchange::arguments_t& args)
 {
-  /*amqp_exchange_declare(
+  amqp_exchange_declare(
       conn_->getConnection(),
       conn_->getChannel(),
       amqp_cstring_bytes(name.c_str()),
       amqp_cstring_bytes(type.c_str()),
       args.test(EXCHANGE_PASSIVE) ? 1 : 0,
       args.test(EXCHANGE_DURABLE) ? 1 : 0,
-      args.test(EXCHANGE_AUTO_DELETE) ? 1 : 0,
       AMQP_EMPTY_TABLE
   );
 
@@ -65,7 +64,7 @@ void Channel::sendDeclareExchangeCommand(const string& name, const string& type,
 
   if (ret.reply_type != AMQP_RESPONSE_NORMAL) {
     throw Exception("Error declaring exchange.", ret, __FILE__, __LINE__);
-  }*/
+  }
 }
 
 

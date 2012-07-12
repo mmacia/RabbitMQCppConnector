@@ -45,7 +45,7 @@ using namespace std;
 enum ExchangeArg {
   EXCHANGE_PASSIVE,
   EXCHANGE_DURABLE,
-  EXCHANGE_AUTO_DELETE,
+  /*EXCHANGE_AUTO_DELETE,*/
   EXCHANGE_INTERNAL,
   EXCHANGE_NO_WAIT,
   numExchangeArgs

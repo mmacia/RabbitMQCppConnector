@@ -15,7 +15,9 @@ int main(int argc, char* argv[])
     shared_ptr<Connection> conn = ConnectionFactory::newConnection();
     shared_ptr<Channel> channel = conn->createChannel();
 
-    // TODO implement declareExchange method
+    channel->declareExchange("my-exchange", "direct");
+
+    // TODO implement bindQueue
 
     Message::ptr_t msg = make_shared<Message>("This is my first message");
     channel->basicPublish(msg, "my-exchange");
