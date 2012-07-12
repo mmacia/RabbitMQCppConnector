@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.6.4 FATAL_ERROR)
 
 project(rabbitmqcppconn_examples CXX)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -std=c++0x -g")
-set(CMAKE_CXX_FLAGS "-std=c++0x")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -std=c++0x -g")
+set(CMAKE_CXX_FLAGS "-std=c++0x -O2 -s")
 
 include_directories("${rabbitmqcppconn_SOURCE_DIR}/ideup/amqp" )
 link_directories("${rabbitmqcppconn_BINARY_DIR}" )
