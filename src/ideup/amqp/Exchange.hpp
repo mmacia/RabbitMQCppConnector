@@ -34,7 +34,7 @@
 #ifndef __IDEUP_AMQP_EXCHANGE_HPP__
 #define __IDEUP_AMQP_EXCHANGE_HPP__
 
-#include "common.hpp"
+#include <bitset>
 
 
 namespace ideup { namespace amqp {
@@ -42,9 +42,20 @@ namespace ideup { namespace amqp {
 
 using namespace std;
 
+enum ExchangeArg {
+  EXCHANGE_PASSIVE,
+  EXCHANGE_DURABLE,
+  EXCHANGE_AUTO_DELETE,
+  EXCHANGE_INTERNAL,
+  EXCHANGE_NO_WAIT,
+  numExchangeArgs
+};
+
 class Exchange
 {
   public:
+    typedef bitset<numExchangeArgs> arguments_t;
+
     Exchange();
     ~Exchange();
 

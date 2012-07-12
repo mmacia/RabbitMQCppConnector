@@ -33,11 +33,11 @@ Channel::~Channel()
 
 void Channel::declareExchange(const string& name, const string& type)
 {
-  auto args = Queue::exchange_args_t();
+  auto args = Exchange::arguments_t();
   sendDeclareExchangeCommand(name, type, args);
 }
 
-void Channel::declareExchange(const string& name, const string& type, Queue::exchange_args_t args)
+void Channel::declareExchange(const string& name, const string& type, Exchange::arguments_t args)
 {
   // check type
   if (type != "direct" || type != "fanout" || type != "topic") {
@@ -48,7 +48,7 @@ void Channel::declareExchange(const string& name, const string& type, Queue::exc
 }
 
 
-void Channel::sendDeclareExchangeCommand(const string& name, const string& type, Queue::exchange_args_t& args)
+void Channel::sendDeclareExchangeCommand(const string& name, const string& type, Exchange::arguments_t& args)
 {
   /*amqp_exchange_declare(
       conn_->getConnection(),

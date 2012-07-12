@@ -67,15 +67,6 @@ enum QueueArg {
   numQueueArgs
 };
 
-enum ExchangeArg {
-  EXCHANGE_PASSIVE,
-  EXCHANGE_DURABLE,
-  EXCHANGE_AUTO_DELETE,
-  EXCHANGE_INTERNAL,
-  EXCHANGE_NO_WAIT,
-  numExchangeArgs
-};
-
 enum ConsumerArg {
   CONSUMER_NO_LOCAL,
   CONSUMER_NO_ACK,
@@ -101,7 +92,6 @@ class Queue
   public:
     typedef shared_ptr<Queue> ptr_t;
     typedef bitset<numQueueArgs> arguments_t;
-    typedef bitset<numExchangeArgs> exchange_args_t;
     typedef bitset<numConsumerArgs> consumer_args_t;
     typedef bitset<numPublisherArgs> publisher_args_t;
     typedef bitset<numDeleteQueueArgs> delete_args_t;

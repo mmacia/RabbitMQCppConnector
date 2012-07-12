@@ -39,6 +39,7 @@
 #include "Exception.hpp"
 #include "Connection.hpp"
 #include "Message.hpp"
+#include "Exchange.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
 #include <bitset>
@@ -63,7 +64,7 @@ class Channel
 
 
     void declareExchange(const string& name, const string& type);
-    void declareExchange(const string& name, const string& type, Queue::exchange_args_t args);
+    void declareExchange(const string& name, const string& type, Exchange::arguments_t args);
 
     Queue::ptr_t declareQueue(const string& name);
     Queue::ptr_t declareQueue(const string& name, Queue::arguments_t& args);
@@ -88,7 +89,7 @@ class Channel
   private:
     Connection* conn_;
 
-    void         sendDeclareExchangeCommand(const string& name, const string& type, Queue::exchange_args_t& args);
+    void         sendDeclareExchangeCommand(const string& name, const string& type, Exchange::arguments_t& args);
     Queue::ptr_t sendDeclareCommand(const string& name, Queue::arguments_t& args);
     void         sendBindCommand(const string& queue_name, const string& exchange_name, const string& routing_key);
     void         sendUnbindCommand(const string& queue_name, const string& exchange_name, const string& routing_key);
