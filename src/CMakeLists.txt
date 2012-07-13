@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 2.6.4 FATAL_ERROR)
 
 project(rabbitmqcppconn CXX)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -std=c++0x -g")
-set(CMAKE_CXX_FLAGS "-std=c++0x -O2 -s")
-
-
 file(GLOB SOURCES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/ideup/amqp/*.cpp")
 file(GLOB INCLUDES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/ideup/amqp/*.hpp")
 

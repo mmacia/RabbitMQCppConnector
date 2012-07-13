@@ -1,5 +1,10 @@
+#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+#set(CMAKE_C_COMPILER "/usr/bin/clang")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -std=c++0x -g")
+set(CMAKE_CXX_FLAGS "-std=c++0x -O2 -s")
+
 cmake_minimum_required(VERSION 2.6.4 FATAL_ERROR)
-project(gnf-native CXX C)
+project(rabbitmq-connector CXX C)
 
 # set paths to all Find* modules and tasks
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules" ${CMAKE_MODULE_PATH})
