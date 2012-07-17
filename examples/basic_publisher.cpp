@@ -16,8 +16,8 @@ int main(int argc, char* argv[])
     shared_ptr<Channel> channel = conn->createChannel();
 
     channel->declareExchange("my-exchange", "direct");
-
-    // TODO implement bindQueue
+    channel->declareQueue("my-first-queue");
+    channel->bindQueue("my-first-queue", "my-exchange");
 
     Message::ptr_t msg = make_shared<Message>("This is my first message");
     channel->basicPublish(msg, "my-exchange");
