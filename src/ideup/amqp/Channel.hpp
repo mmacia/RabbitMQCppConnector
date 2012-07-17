@@ -59,14 +59,51 @@ class Connection;
 class Channel
 {
   public:
+    /**
+     * Default constructor
+     *
+     * @param[in] conn RabbitMQ connection object
+     */
     Channel(Connection* conn);
+    /**
+     * Default destructor
+     */
     virtual ~Channel();
 
 
+    /**
+     * Creates a new exchange in RabbitMQ server
+     *
+     * Note that exchange type must be one of theese parameters: direct, fanout or topic. Otherwise Exception will be
+     * thrown.
+     *
+     * @param[in] name Exchange name.
+     * @param[in] type Exchange type.
+     */
     void declareExchange(const string& name, const string& type);
+    /**
+     * Creates a new exchange in RabbitMQ server
+     *
+     * @param[in] name Exchange name.
+     * @param[in] type Exchange type.
+     * @param[in] args Declaration arguments.
+     *
+     * @see {Channel::declareExchange}
+     */
     void declareExchange(const string& name, const string& type, Exchange::arguments_t args);
 
+    /**
+     * Creates a new queue in RabbitMQ server
+     *
+     * @param[in] name Queue name.
+     */
     Queue::ptr_t declareQueue(const string& name);
+    /**
+     * Creates a new queue in RabbitMQ server
+     *
+     * @param[in] name Queue name.
+     * @param[in] args Declaration arguments.
+     */
     Queue::ptr_t declareQueue(const string& name, Queue::arguments_t& args);
 
     void deleteQueue(Queue::ptr_t& queue);
@@ -76,6 +113,12 @@ class Channel
     void purgeQueue(Queue::ptr_t& queue, bool no_wait = false);
     /*void basicAck();*/
 
+    /**
+     * Publish a new message through given exchange name
+     *
+     * @param[in] message Message enclosure.
+     * @param[in] exchange_name Exchange name.
+     */
     void basicPublish(Message::ptr_t message, const string& exchange_name);
     void basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key);
     void basicPublish(Message::ptr_t message, const string& exchange_name, const string& routing_key, Queue::publisher_args_t args);

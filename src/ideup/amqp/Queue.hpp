@@ -38,7 +38,6 @@
 #include "Message.hpp"
 #include "Observer.hpp"
 #include "Exception.hpp"
-//#include "Base.hpp"
 //#include "Channel.hpp"
 #include <librabbitmq/amqp.h>
 #include <librabbitmq/amqp_framing.h>
